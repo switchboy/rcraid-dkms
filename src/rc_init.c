@@ -341,7 +341,9 @@ static Scsi_Host_Template driver_template = {
 	.module =                  THIS_MODULE,
 	.name =                    RC_DRIVER_NAME,
 	.proc_name =               RC_DRIVER_NAME,
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
 	.proc_dir =                NULL,
+#endif
 	.info =                    rc_info,
 	.ioctl =                   rc_ioctl,
 	.queuecommand =            rc_queue_cmd,
@@ -792,7 +794,9 @@ rc_init_host(struct pci_dev *pdev)
 	host_ptr->unique_id = 0;
 	host_ptr->this_id = -1;  /* SCSI Id for the adapter itself */
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
 	driver_template.present = 1;    /* one virtual adapter */
+#endif
 
 	error = scsi_add_host(host_ptr, &pdev->dev);
 
