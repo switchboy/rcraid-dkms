@@ -2794,6 +2794,7 @@ static struct ctl_table rcraid_table[] = {
 	{ }
 };
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,5,0)
 static struct ctl_table rcraid_dir_table[] = {
 	{ .procname	= "rcraid",
 	  .mode		= 0555,
@@ -2814,6 +2815,7 @@ static struct ctl_table rcraid_root_table[] = {
 	  .child	= rcraid_scsi_dir_table },
 	{ }
 };
+#endif
 
 static struct ctl_table_header *rcraid_sysctl_hdr;
 
@@ -2834,8 +2836,9 @@ static int __init rcraid_init(void)
 
 	if (err != 0)
 		return err;
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,5,0)
+	rcraid_sysctl_hdr = register_sysctl("dev/scsi/rcraid", rcraid_table);
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,21)
 	rcraid_sysctl_hdr = register_sysctl_table(rcraid_root_table);
 #else
 	/*
