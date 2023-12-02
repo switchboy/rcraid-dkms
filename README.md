@@ -22,12 +22,8 @@ Therefore we try here to keep the code alive for many kernel versions as possibl
 Installation
 ============
 ## Debian/Ubuntu
-  * Driver package for Ubuntu: https://launchpad.net/~thopiekar/+archive/ubuntu/rcraid 
-    ```bash
-    sudo add-apt-repository ppa:thopiekar/rcraid
-    sudo apt-get update
-    sudo apt-get install rcraid-dkms
-    ```
+  * Build from source
+
   * Switching to RAID mode:
     * Boot Linux in AHCI mode.
     * Append `modprobe.blacklist=ahci` to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub
@@ -40,7 +36,7 @@ Installation
 * Download and unpack zip or:
 
 ```bash
-  git clone https://github.com/thopiekar/rcraid-dkms.git
+  git clone https://github.com/fabscav/rcraid-dkms.git
 ```
 
 * From inside "arch" directory:
