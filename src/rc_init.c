@@ -183,7 +183,7 @@ void        rc_timeout_done(unsigned long data);
 #else
 void        rc_timeout_done(struct timer_list * t);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 2, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0)
 static int rc_slave_cfg(struct scsi_device *sdev, struct queue_limits *qlim);
 #else
 static int rc_slave_cfg(struct scsi_device *sdev);
@@ -368,14 +368,14 @@ static Scsi_Host_Template driver_template = {
     .use_clustering =          ENABLE_CLUSTERING,
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 14, 0)
     .slave_configure =         rc_slave_cfg,
 #else
     .sdev_configure =          rc_slave_cfg,
 #endif
 };
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 2, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0)
 static int rc_slave_cfg(struct scsi_device *sdev, struct queue_limits *qlim)
 #else
 static int rc_slave_cfg(struct scsi_device *sdev)
