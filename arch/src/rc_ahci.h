@@ -34,4 +34,9 @@
 u32 rc_ahci_regread(void *context, u32 offset);
 void rc_ahci_regwrite(void *context, u32 offset, u32 value);
 
+// Function prototypes for AHCI register access
+#include "rc_types_platform.h"
+u32 rc_ahci_regread(void *context, u32 offset);
+void rc_ahci_regwrite(void *context, u32 offset, u32 value);
+
 #endif // RC_AHCI_SUPPORT

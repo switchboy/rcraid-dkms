@@ -23,12 +23,15 @@
 #include "rc_ahci.h"
 #include "asm/msr.h"
 
+
 #include <linux/version.h>
 #include <linux/page-flags.h>
 #include <linux/vmalloc.h>
 #include <linux/sysrq.h>
 #include <linux/nmi.h>
+#include <linux/timer.h>
 #include <scsi/sg.h>
+
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
 #include <linux/dma-mapping.h>
@@ -366,7 +369,11 @@ void rc_msg_suspend(rc_softstate_t *state, rc_adapter_t* adapter)
 	{
     	rc_printk(RC_INFO2, "rc_msg_shutdown: stop OSIC timer\n");
 		state->state &= ~ENABLE_TIMER;
-		del_timer_sync(&state->timer);
+		#if LINUX_VERSION_CODE > KERNEL_VERSION(6,14,6)
+			timer_delete_sync(&state->timer);
+		#else
+			del_timer_sync(&state->timer);
+		#endif
 	}
     rc_printk(RC_ALERT, "rc_msg_suspend: pausing for 1/4 second\n");
     rc_msg_timeout(HZ>>2);
@@ -459,7 +466,11 @@ rc_msg_shutdown( rc_softstate_t *statep)
 
 	rc_printk(RC_INFO2, "rc_msg_shutdown: stop OSIC timer\n");
 	statep->state &= ~ENABLE_TIMER;
-	del_timer_sync(&statep->timer);
+	#if LINUX_VERSION_CODE > KERNEL_VERSION(6,14,6)
+			timer_delete_sync(&statep->timer);
+	#else
+			del_timer_sync(&statep->timer);
+	#endif
 	rc_printk(RC_DEBUG, "rc_msg_shutdown: pausing for 1/4 second\n");
 	rc_msg_timeout(HZ>>2);
 
@@ -2073,7 +2084,7 @@ rc_msg_send_srb_function (rc_softstate_t *state, int function)
  * We've already checked that this is the case.
  */
 
-void __inline__
+__inline__ void
 rc_msg_build_sg_virt( rc_srb_t *srb)
 {
 
@@ -2098,7 +2109,7 @@ rc_msg_build_sg_virt( rc_srb_t *srb)
 /*
  * build a scatter/gater list of physical address to send to the OSIC.
  */
-void __inline__
+__inline__ void
 rc_msg_build_sg_phys( rc_srb_t *srb)
 {
 

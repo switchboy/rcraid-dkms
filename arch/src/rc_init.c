@@ -22,10 +22,8 @@
 #include "version.h"
 
 #define RC_DRIVER_VERSION       RC_VERSION_STR
-#if !defined(RC_DRIVER_BUILD_DATE)
-#define RC_DRIVER_BUILD_DATE    __DATE__
-#endif  /* !defined(RC_DRIVER_BUILD_DATE) */
-#define RC_DRIVER_BUILD_TIME    __TIME__
+#define RC_DRIVER_BUILD_DATE    "JUN 13 2025"
+#define RC_DRIVER_BUILD_TIME    "15:52:33"
 #define RC_DRIVER_NAME          "rcraid"
 #define RC_MAX_CMD_Q_DEPTH      1024
 #define RC_DEFAULT_CMD_Q_DEPTH  512
@@ -36,6 +34,7 @@
 //#define RC_SUPPORT_V60_DRIVERS_ON_HUDSON_PLATFORMS
 
 #include "rc.h"
+#include "rc_ahci.h"
 #include "version.h"
 #include "build_number.h"
 #include "rc_pci_ids.h"

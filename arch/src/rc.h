@@ -19,8 +19,9 @@
  *
  ****************************************************************************/
 
-#ifndef _BC_OSHEADERS_H_
+#ifndef _RC_OSHEADERS_H_
 #define _RC_OSHEADERS_H_
+#define RC_AHCI_SUPPORT
 
 #include <linux/version.h>
 
@@ -221,5 +222,26 @@ extern rc_thread_t rc_thread[];
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,13,0)
 #define DEVICE_ACPI_HANDLE(dev) ((acpi_handle)ACPI_HANDLE(dev))
 #endif
+
+// Prototypes for functions defined in rc_init.c
+void rc_shutdown_host(struct Scsi_Host *host_ptr);
+void rcraid_shutdown_one(struct pci_dev *pdev);
+void rc_init_proc(void);
+
+// Prototypes for functions defined in rc_msg.c
+int rc_vprintf(uint32_t severity, const char *format, va_list ar);
+void rc_check_interrupt(rc_adapter_t* adapter);
+void rc_msg_suspend(rc_softstate_t *state, rc_adapter_t* adapter);
+void rc_msg_resume(rc_softstate_t *state, rc_adapter_t* adapter);
+void rc_msg_pci_config(rc_pci_op_t *pci_op, rc_uint32_t call_type);
+int rc_wq_handler(void *work);
+void rc_msg_resume_work(void);
+void rc_msg_suspend_work(rc_adapter_t *adapter);
+void rc_msg_init_tasklets(rc_softstate_t *state);
+void rc_msg_kill_tasklets(rc_softstate_t *state);
+int rc_msg_init(rc_softstate_t *state); // Assuming return type is int based on common patterns
+void rc_msg_free_dma_memory(rc_adapter_t *adapter, void *cpu_addr, dma_addr_t dmaHandle, rc_uint32_t bytes);
+size_t Min(size_t a, size_t b); // From rc_msg.c usage
+
 
 #endif // _RC_OSHEADERS_H_
