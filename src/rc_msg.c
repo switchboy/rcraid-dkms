@@ -18,7 +18,6 @@
  * open source license.
  *
  ****************************************************************************/
-#include "rc_types_platform.h"
 #include "rc.h"
 #include "rc_ahci.h"
 #include "asm/msr.h"
@@ -1312,20 +1311,19 @@ rc_msg_init(rc_softstate_t *state)
 	 */
 	return(0);
 }
-void
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-rc_msg_timer(unsigned long data)
+void rc_msg_timer(unsigned long data)
 #else
-rc_msg_timer(struct timer_list * t)
+void rc_msg_timer(struct timer_list *t)
 #endif
 {
-	rc_softstate_t *state;
-	rc_send_arg_t    args;
+    rc_softstate_t *state;
+	rc_send_arg_t  args;	
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-	state = (rc_softstate_t *)data;
+    state = (rc_softstate_t *)data;
 #else
-	state = from_timer(state, t, timer);
+    state = container_of(t, rc_softstate_t, timer);
 #endif
 
 	if ((state->state & ENABLE_TIMER) == 0)
@@ -2457,21 +2455,17 @@ rc_msg_unmap_mem(struct unmap_memory_s *unmap)
 }
 
 
-void
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-rc_msg_timeout_done(unsigned long data)
+void rc_msg_timeout_done(unsigned long data)
 #else
-rc_msg_timeout_done(struct timer_list * t)
+void rc_msg_timeout_done(struct timer_list *t)
 #endif
 {
-	rc_softstate_t *state;
-
+    rc_softstate_t *state;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-	state = (rc_softstate_t *)data;
-	init_timer(&state->msg_timeout);
+    state = (rc_softstate_t *)data;
 #else
-	state = from_timer(state, t, msg_timeout);
-	timer_setup(&state->msg_timeout, rc_msg_timeout_done, 0);
+    state = container_of(t, rc_softstate_t, msg_timeout);
 #endif
 	up(&state->msg_timeout_sema);
 }
