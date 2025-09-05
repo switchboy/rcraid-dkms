@@ -2550,39 +2550,39 @@ rc_timeout_done(unsigned long data)
 rc_timeout_done(struct timer_list *t)
 #endif
 {
-	rc_softstate_t *state;
+    rc_softstate_t *state;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-	state = (rc_softstate_t *)data;
-	init_timer(&state->rc_timeout);
+    state = (rc_softstate_t *)data;
 #else
-	state = from_timer(state, t, rc_timeout);
-	timer_setup(&state->rc_timeout, rc_timeout_done, 0);
+    state = container_of(t, rc_softstate_t, rc_timeout);
 #endif
-	up(&state->rc_timeout_sema);
+
+    up(&state->rc_timeout_sema);
 }
 
 void
 rc_timeout(int to)
 {
-	rc_softstate_t *state;
+    rc_softstate_t *state;
 
-	state = &rc_state;
-	/*
-	 * set up timeout
-	 */
+    state = &rc_state;
+    /*
+     * set up timeout
+     */
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
-	init_timer(&state->rc_timeout);
-	state->rc_timeout.expires = jiffies  + to;
-	state->rc_timeout.data = (unsigned long)state;
-	state->rc_timeout.function = rc_timeout_done;
+    init_timer(&state->rc_timeout);
+    state->rc_timeout.expires = jiffies  + to;
+    state->rc_timeout.data = (unsigned long)state;
+    state->rc_timeout.function = rc_timeout_done;
 #else
-	timer_setup(&state->rc_timeout, rc_timeout_done, 0);
-	state->rc_timeout.expires = jiffies + to;
+    timer_setup(&state->rc_timeout, rc_timeout_done, 0);
+    state->rc_timeout.expires = jiffies + to;
 #endif
-	add_timer(&state->rc_timeout);
-	down(&state->rc_timeout_sema);
+    add_timer(&state->rc_timeout);
+    down(&state->rc_timeout_sema);
 }
+
 
 
 void
