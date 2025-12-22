@@ -188,8 +188,13 @@ static int rc_slave_cfg(struct scsi_device *sdev, struct queue_limits *qlim);
 static int rc_slave_cfg(struct scsi_device *sdev);
 #endif
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0)
+int         rc_bios_params(struct scsi_device *sdev, struct gendisk *gdisk,
+			   sector_t capacity, int geom[]);
+#else
 int         rc_bios_params(struct scsi_device *sdev, struct block_device *bdev,
 			   sector_t capacity, int geom[]);
+#endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
 int         rc_queue_cmd(struct scsi_cmnd * scp, void (*CompletionRoutine) (struct scsi_cmnd *));
@@ -2086,11 +2091,19 @@ rc_info (struct Scsi_Host *host_ptr)
  *  from the partition table will be used by the BIOS, and a warning may
  *  be displayed.
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 14, 0)
+int
+rc_bios_params (struct scsi_device *sdev,
+		struct gendisk *gdisk,
+		sector_t capacity,
+		int geom[])
+#else
 int
 rc_bios_params (struct scsi_device *sdev,
 		struct block_device *bdev,
 		sector_t capacity,
 		int geom[])
+#endif
 {
 	rc_bios_disk_parameters_t *param;
 
