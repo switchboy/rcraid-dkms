@@ -4,7 +4,7 @@
 _pkgbase=rcraid
 pkgname=rcraid-dkms
 pkgver=17.2.1
-pkgrel=2
+pkgrel=3
 pkgdesc="AMD AM4 socket X370/X470 chipset motherbroad NVMe/SATA RAID driver (DKMS)"
 arch=('i686' 'x86_64')
 url="https://www.amd.com/en/support/chipsets/amd-socket-am4/x370"

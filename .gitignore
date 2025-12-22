@@ -13,3 +13,4 @@ src/rcraid.ko
 # Generated files
 src/rcraid.mod.c
 src/vers.c
+arch/src/
